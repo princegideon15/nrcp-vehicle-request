@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NRCP vehicle request and return forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#f3f5f9;--surface:#fff;--border:#dbe1ea;--text:#0f172a;--muted:#5b6678;--primary:#2563eb;--primary-h:#1d4ed8;--link:#1d4ed8;--tint:#eff4ff;--danger:#b42318;--shadow:0 1px 2px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.05);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--surface:#131c2e;--border:#27344b;--text:#e8edf6;--muted:#9aa6ba;--link:#8fb0ff;--tint:#16254a;--danger:#ff8a80;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1220;--surface:#131c2e;--border:#27344b;--text:#e8edf6;--muted:#9aa6ba;--link:#8fb0ff;--tint:#16254a;--danger:#ff8a80;--shadow:none;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,Roboto,system-ui,-apple-system,"Segoe UI",sans-serif}
+svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+header{background:var(--surface);border-bottom:1px solid var(--border)}
+.bar{max-width:1560px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center}
+.bar h1{font-size:17px;margin:0;font-weight:600;line-height:1.2}
+.bar p{margin:0;font-size:13px;color:var(--muted)}
+main{max-width:1560px;margin:0 auto;padding:24px 20px 48px;display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:24px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+.tabs{display:flex;gap:4px;padding:8px 16px 0;border-bottom:1px solid var(--border)}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:10px 14px;font:inherit;font-weight:500;color:var(--muted);cursor:pointer;border-radius:6px 6px 0 0}
+.tabs button:hover{color:var(--text);background:var(--tint)}
+.tabs button[aria-selected="true"]{color:var(--link);border-bottom-color:var(--primary);font-weight:600}
+.panel[hidden]{display:none}
+.sec{padding:20px;border-bottom:1px solid var(--border)}
+.sec:last-child{border-bottom:0}
+.sec h3{margin:0 0 4px;font-size:14px;font-weight:600}
+.sec .hint{margin:0 0 14px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.span2{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:500;margin-bottom:6px}
+label .req{color:var(--danger)}
+input,textarea{width:100%;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;min-height:40px;transition:border-color .15s,box-shadow .15s}
+textarea{resize:vertical;min-height:84px}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
+input:hover,textarea:hover{border-color:#94a3b8}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.35)}
+textarea:disabled{opacity:.55;cursor:not-allowed;background:var(--bg)}
+[aria-invalid="true"]{border-color:var(--danger)}
+.err{display:none;color:var(--danger);font-size:12.5px;margin-top:5px}
+.err.on{display:block}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.person{position:relative}
+.person span{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none}
+.person input{padding-left:30px}
+.opts{display:grid;gap:8px}
+label.opt{display:flex;align-items:center;gap:10px;margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:500}
+label.opt:hover{border-color:var(--primary)}
+label.opt:has(input:checked){background:var(--tint);border-color:var(--primary)}
+label.opt:has(input:focus-visible){box-shadow:0 0 0 3px rgba(37,99,235,.35)}
+.opt input{width:auto;min-height:0;accent-color:var(--primary)}
+.opt small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;padding:16px 20px;background:var(--bg);border-top:1px solid var(--border);border-radius:0 0 12px 12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;font-size:14px;min-height:42px;padding:0 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:background .15s,border-color .15s,transform .05s}
+.btn:hover{background:var(--tint);border-color:var(--primary)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;flex:1}
+.btn.primary:hover{background:var(--primary-h);border-color:var(--primary-h)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn.sm{min-height:32px;padding:0 10px}
+.spin{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:s .7s linear infinite}
+.loading .spin{display:block}.loading .ic{display:none}
+@keyframes s{to{transform:rotate(360deg)}}
+.pv{position:sticky;top:16px}
+.pv>h2{margin:0;padding:12px 20px;font-size:15px;font-weight:600;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.pv>h2 svg{color:var(--primary)}
+.zoom{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:500}
+.stage{padding:20px;background:var(--bg);border-radius:0 0 12px 12px}
+@media (min-width:1101px){.stage{max-height:calc(100vh - 110px);overflow:auto}}
+.opt-note{color:var(--muted);font-weight:400}
+.note{margin:12px 0 0;font-size:13px;color:var(--muted);text-align:center}
+/* A4 landscape sheet: two A5 halves, text positioned from the same layout the PDF uses */
+.sheet{position:relative;display:grid;grid-template-columns:1fr 1fr;aspect-ratio:297/210;margin:0 auto;background:#fff;color:#111;font-family:"Times New Roman",Times,serif;box-shadow:0 4px 18px rgba(15,23,42,.18);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet::after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #9aa6ba}
+.half{position:relative;container-type:inline-size;overflow:hidden}
+.it{position:absolute;white-space:nowrap;line-height:1}
+.dv{color:#0b2a8a;font-weight:500;text-overflow:ellipsis}
+.ln{position:absolute;display:block;border-top:max(1px,.17cqw) solid #111}
+.bx{position:absolute;display:block;border:max(1px,.17cqw) solid #111}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:12px 16px;border-radius:10px;background:#0f172a;color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .2s,transform .2s;z-index:20}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.ok svg{color:#6ee7a0}.toast.bad svg{color:#ffb4ab}
+@media (max-width:1100px){main{grid-template-columns:1fr}.pv{position:static}}
+@media (max-width:560px){.grid,.people{grid-template-columns:1fr}.bar p{display:none}.btn.primary{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:2s!important}}
+@media print{@page{size:A4 landscape;margin:0}:root,html,body{background:#fff!important;padding:0!important}header,form.card,.toast,.pv>h2,.note{display:none!important}main{display:block;padding:0;max-width:none}.pv{position:static;border:0;box-shadow:none;background:#fff}.stage{padding:0;max-height:none;overflow:visible;background:#fff}#sheet{width:297mm!important;height:210mm;aspect-ratio:auto;box-shadow:none;margin:0}.dv{color:#000!important}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></div>
+  <div><h1>NRCP vehicle request and return forms</h1><p>Form FAD-SMS F5 · Supply &amp; Maintenance Section</p></div>
+</div></header>
+
+<main>
+<form id="f" class="card" novalidate>
+  <div class="tabs" role="tablist" aria-label="Form pages">
+    <button type="button" role="tab" id="t0" aria-controls="pn0" aria-selected="true">Request</button>
+    <button type="button" role="tab" id="t1" aria-controls="pn1" aria-selected="false" tabindex="-1">Return trip</button>
+  </div>
+  <div class="panel" id="pn0" role="tabpanel" aria-labelledby="t0"></div>
+  <div class="panel" id="pn1" role="tabpanel" aria-labelledby="t1" hidden></div>
+  <div class="actions">
+    <button type="button" class="btn primary" id="ex"><svg class="ic" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span class="spin" aria-hidden="true"></span><span id="ext">Export PDF</span></button>
+    <button type="button" class="btn" id="pr"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>Print</button>
+    <button type="button" class="btn" id="rs"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>Clear form</button>
+  </div>
+</form>
+
+<aside class="card pv" aria-label="Preview of both forms">
+  <h2><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Live preview · A4 landscape
+    <span class="zoom"><button type="button" class="btn sm" id="zo" aria-label="Zoom out">−</button><span id="zl" aria-live="polite">100%</span><button type="button" class="btn sm" id="zi" aria-label="Zoom in">+</button></span></h2>
+  <div class="stage">
+    <div class="sheet" id="sheet"><div class="half" id="h1"></div><div class="half" id="h2"></div></div>
+    <p class="note">Left: request form. Right: return trip form. Print or export one sheet, then cut along the dashed line.</p>
+  </div>
+</aside>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" id="ti"></svg><span id="tm"></span></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const g=id=>$('#'+id).value.trim();
+const OK='<path d="M20 6 9 17l-5-5"/>',BAD='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fmtDate=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):'';
+const fmtTime=v=>{if(!v)return'';let[h,m]=v.split(':').map(Number);const p=h>=12?'PM':'AM';h=h%12||12;return h+':'+String(m).padStart(2,'0')+' '+p};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const FIELDS=['rdate','tdate','ttime','place','purpose','by','p0','p1','p2','p3','p4','p5'];
+
+/* panels: the same inputs for each form, k = a (request) or b (return trip) */
+function panel(k){
+  const r=k==='b',I=n=>k+'_'+n,E=n=>`<div class="err" id="e-${I(n)}" role="alert"></div>`;
+  const ppl=[0,1,2,3,4,5].map(i=>`<div class="person"><span aria-hidden="true">${i+1}.</span><input type="text" id="${I('p'+i)}" maxlength="36" aria-label="Personnel ${i+1}${i?'':' (required)'}" placeholder="${i?'Optional':'Full name'}" autocomplete="off"></div>`).join('');
+  return `${r?`<div class="sec"><h3>Return trip</h3><p class="hint">Same form, for the trip back. Enter the time you leave the place of travel.</p><button type="button" class="btn" id="fill"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Fill from request</button></div>`:''}
+<div class="sec"><h3>Request date</h3><p class="hint">Submit at least one day before the scheduled trip.</p>
+<div class="grid"><div><label for="${I('rdate')}">Date of request <span class="req" aria-hidden="true">*</span></label><input id="${I('rdate')}" type="date" aria-describedby="e-${I('rdate')}">${E('rdate')}</div></div></div>
+<div class="sec"><h3>Personnel</h3><p class="hint">Up to six names. The first is required.</p><div class="people">${ppl}</div>${E('people')}</div>
+<div class="sec"><h3>Transportation particulars</h3><p class="hint">${r?'Leaving the place of travel and going back to the office.':'Where, when and why the vehicle is needed.'}</p>
+<div class="grid">
+<div><label for="${I('tdate')}">Date of travel <span class="req" aria-hidden="true">*</span></label><input id="${I('tdate')}" type="date" aria-describedby="e-${I('tdate')}">${E('tdate')}</div>
+<div><label for="${I('ttime')}">Departure time <span class="req" aria-hidden="true">*</span></label><input id="${I('ttime')}" type="time" aria-describedby="e-${I('ttime')}">${E('ttime')}</div>
+<div class="span2"><label for="${I('place')}">Place of travel <span class="req" aria-hidden="true">*</span></label><input id="${I('place')}" type="text" maxlength="62" placeholder="${r?'e.g. NRCP Office, Bicutan, Taguig':'e.g. DOST Compound, Bicutan, Taguig'}" aria-describedby="e-${I('place')}" autocomplete="off">${E('place')}</div>
+<div class="span2"><label for="${I('purpose')}">Purpose of travel <span class="req" aria-hidden="true">*</span> <span class="opt-note">(up to 120 characters)</span></label><textarea id="${I('purpose')}" maxlength="120" placeholder="${r?'e.g. Return to office after the coordination meeting':'e.g. Submit research documents and attend a coordination meeting'}" aria-describedby="e-${I('purpose')}"></textarea>${E('purpose')}</div>
+</div></div>
+<div class="sec"><h3>Requested by</h3><p class="hint">Printed above the signature line. Leave blank to sign by hand.</p><label for="${I('by')}">Chief of Section/Division</label><input id="${I('by')}" type="text" maxlength="40" placeholder="Full name" autocomplete="name"></div>`;
+}
+$('#pn0').innerHTML=panel('a');$('#pn1').innerHTML=panel('b');
+
+function tab(n,focus){$$('[role=tab]').forEach((b,i)=>{b.setAttribute('aria-selected',i==n);b.tabIndex=i==n?0:-1;if(i==n&&focus)b.focus()});$$('.panel').forEach((p,i)=>p.hidden=i!=n)}
+$$('[role=tab]').forEach((b,i)=>{b.onclick=()=>tab(i);b.onkeydown=e=>{if(e.key=='ArrowRight'||e.key=='ArrowLeft'){tab(i?0:1,true);e.preventDefault()}}});
+
+const vals=k=>{const G=n=>g(k+'_'+n);return{rdate:fmtDate(G('rdate')),p:[0,1,2,3,4,5].map(i=>G('p'+i)),tdate:fmtDate(G('tdate')),ttime:fmtTime(G('ttime')),place:G('place'),purpose:G('purpose'),by:G('by')}};
+let M;
+function wrap(t,pt,w1,w2){
+  if(!t)return['',''];
+  try{M=M||new window.jspdf.jsPDF();M.setFont('times','normal');M.setFontSize(pt);const f=M.splitTextToSize(t,w1)[0]||'',r=t.slice(f.length).trim();return[f,r?M.splitTextToSize(r,w2)[0]:'']}
+  catch(e){return[t.slice(0,58),t.slice(58,120)]}
+}
+
+/* one layout drives both the preview and the PDF. Coordinates come from the photographed form (px), scaled onto an A5 half (mm) */
+const S=1.03,mx=x=>(x-80)/10*S+6,my=y=>(y-60)/10*S+3,P2=s=>+(s*.2835*S).toFixed(2);
+const T=(s,x,y,sz=30,a='l')=>({k:'t',s,x:mx(x),y:my(y),pt:P2(sz),a,w:0});
+const V=(s,x,y,sz=29,a='l',w=0)=>({k:'v',s,x:mx(x),y:my(y),pt:P2(sz),a,w:w?w/10*S:0});
+const L=(x1,x2,y)=>({k:'l',x1:mx(x1),x2:mx(x2),y:my(y)});
+const B=(x,y,x2,y2)=>({k:'b',x:mx(x),y:my(y),w:(x2-x)/10*S,h:(y2-y)/10*S});
+function form(v){
+  const c=745,pl=wrap(v.purpose,P2(29),81,110),it=[
+    T('NATIONAL RESEARCH COUNCIL OF THE PHILIPPINES',c,155,35,'c'),T('Bicutan, Taguig, Metro Manila',c,185,22,'c'),
+    T('REQUEST TO USE NRCP VEHICLE',c,218,34,'c'),T('(to be submitted at least one day before the scheduled trip)',c,250,20,'c'),
+    T('Date:',800,312),L(875,1285,317),V(v.rdate,1080,309,29,'c',400),
+    T('The Chief Administrative Officer:',173,345,31),T('This is to request transportation for the following personnel.',173,392,31)];
+  [[447,455,0,3],[503,510,1,4],[560,566,2,5]].forEach(([yl,yr,a,b])=>it.push(
+    T((a+1)+'.',173,yl-8),L(195,705,yl),V(v.p[a],205,yl-8,29,'l',490),T((b+1)+'.',770,yr-8),L(795,1295,yr),V(v.p[b],805,yr-8,29,'l',480)));
+  return it.concat([
+    T('Particulars of the transportation are hereunder enumerated:',167,612,31),
+    T('1. Date of Travel',170,655,31),L(440,742,668),V(v.tdate,591,662,27,'c',295),
+    T('4. Departure Time',772,663,31),L(1073,1312,672),V(v.ttime,1192,666,29,'c',230),
+    T('2. Place of Travel',165,720,31),L(472,1315,730),V(v.place,480,722,29,'l',830),
+    T('3. Purpose of Travel',162,785,31),L(500,1318,800),L(220,1320,858),V(pl[0],510,792,29,'l',800),V(pl[1],230,850,29,'l',1080),
+    T('Requested by:',158,915,31),T('Approved/Disapproved:',777,920,31),
+    L(150,558,1044),V(v.by,354,1036,29,'c',400),T('Chief of Section/Division',358,1095,24,'c'),
+    T('GERALDO S. PETILLA, DPA',1065,1095,33,'c'),T('FAD',1065,1140,33,'c'),L(145,1335,1163),
+    T('REPORT OF COMPLIANCE',c,1228,33,'c'),T('(to be accomplished by the Driver)',c,1270,31,'c'),
+    T('Action taken:',142,1315,31),T('( ) Compiled with',318,1403,31),T('( ) Not compiled with',683,1400,31),
+    T('Reason for non-compliance:',687,1445,31),L(1125,1348,1442),L(683,1350,1520),
+    T('By:',687,1585,31),L(748,1352,1583),T('Driver',1070,1615,22,'c'),
+    T('Reported to:',123,1700,31),T('SARLYN H. ROBLEDO',318,1700,36),T('Administrative Officer V',388,1735,24),T('Supply & Maintenance Section',349,1768,24),
+    T('Noted:',113,1880,28),B(995,1797,1340,1933),T('FAD-SMS F5',1167,1855,33,'c'),T('Rev.0/11-09-22',1167,1905,33,'c'),
+    T('GERALDO S. PETILLA, DPA',615,1960,37,'c'),T('FAD',615,2010,37,'c')]);
+}
+
+/* preview */
+const cq=mm=>(mm/148.5*100).toFixed(3)+'cqw',pc=mm=>(mm/1.485).toFixed(3)+'%';
+function html(i){
+  if(i.k=='l')return`<i class="ln" style="left:${pc(i.x1)};width:${pc(i.x2-i.x1)};top:${cq(i.y)}"></i>`;
+  if(i.k=='b')return`<i class="bx" style="left:${pc(i.x)};top:${cq(i.y)};width:${pc(i.w)};height:${cq(i.h)}"></i>`;
+  if(!i.s)return'';
+  const tr=i.a=='c'?'translateX(-50%)':'none',w=i.w?`max-width:${pc(i.w)};overflow:hidden;`:'';
+  return`<span class="it${i.k=='v'?' dv':''}" style="left:${pc(i.x)};top:${cq(i.y-i.pt*.3528*.84)};font-size:${(i.pt*.23758).toFixed(3)}cqw;transform:${tr};${w}">${esc(i.s)}</span>`;
+}
+function sync(){$('#h1').innerHTML=form(vals('a')).map(html).join('');$('#h2').innerHTML=form(vals('b')).map(html).join('')}
+document.addEventListener('input',e=>{if(e.target.closest('#f')){clearErr(e.target);sync()}});
+
+/* validation */
+const eid=id=>$('#e-'+id.replace(/_p\d$/,'_people'));
+function setErr(id,msg){const f=$('#'+id);if(f)f.setAttribute('aria-invalid','true');const e=eid(id);e.textContent=msg;e.classList.add('on')}
+function clearErr(t){const e=t.id&&eid(t.id);if(e){e.classList.remove('on');e.textContent=''}t.removeAttribute('aria-invalid')}
+function validate(){
+  $$('.err').forEach(e=>e.classList.remove('on'));$$('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));
+  const bad=[];
+  for(const k of['a','b']){
+    if(k==='b'&&!FIELDS.some(f=>g('b_'+f)))continue;   /* a blank return form prints blank */
+    const G=n=>g(k+'_'+n),need=(f,m)=>{if(!G(f)){setErr(k+'_'+f,m);bad.push(k+'_'+f)}};
+    need('rdate','Enter the date of the request.');need('p0','Add at least one passenger.');
+    need('tdate','Choose the date of travel.');need('ttime','Enter the departure time.');need('place','Enter the place of travel.');need('purpose','Describe the purpose of travel.');
+    if(G('rdate')&&G('tdate')&&!bad.includes(k+'_tdate')&&(new Date(G('tdate'))-new Date(G('rdate')))/864e5<1){setErr(k+'_tdate','Travel must be at least one day after the request date.');bad.push(k+'_tdate')}
+  }
+  if(bad.length){const f=bad[0];tab(f[0]==='a'?0:1);const el=$('#'+f);setTimeout(()=>{el.scrollIntoView({block:'center',behavior:'smooth'});el.focus({preventScroll:true})},30)}
+  return!bad.length;
+}
+
+let tt;
+function toast(msg,ok){$('#ti').innerHTML=ok?OK:BAD;$('#tm').textContent=msg;const t=$('#toast');t.className='toast on '+(ok?'ok':'bad');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),5200)}
+
+/* PDF: one A4 landscape sheet, request on the left half, return trip on the right half */
+function buildPdf(){
+  const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  ['a','b'].forEach((k,n)=>{const ox=n*148.5;form(vals(k)).forEach(i=>{
+    doc.setDrawColor(0);doc.setLineWidth(.25);
+    if(i.k=='l')doc.line(ox+i.x1,i.y,ox+i.x2,i.y);
+    else if(i.k=='b')doc.rect(ox+i.x,i.y,i.w,i.h);
+    else if(i.s){doc.setFont('times','normal');doc.setFontSize(i.pt);doc.setTextColor(0,0,0);const s=i.w?doc.splitTextToSize(i.s,i.w)[0]:i.s;doc.text(s,ox+i.x,i.y,{align:{l:'left',c:'center'}[i.a]})}
+  })});
+  doc.setDrawColor(150);doc.setLineWidth(.2);doc.setLineDashPattern([2,2],0);doc.line(148.5,0,148.5,210);
+  return doc;
+}
+const ex=$('#ex');
+ex.onclick=async()=>{
+  if(!validate()){toast('Fix the highlighted fields, then export again.',false);return}
+  if(!window.jspdf){toast('PDF tools did not load. Check your connection and reload.',false);return}
+  ex.disabled=true;ex.classList.add('loading');$('#ext').textContent='Preparing PDF…';
+  let blob;
+  try{
+    blob=buildPdf().output('blob');
+    const dl=window.claude?await window.claude.use('downloads'):null;
+    if(!dl)throw{code:'unavailable'};
+    await dl.save({filename:'NRCP-Vehicle-Forms-'+g('a_tdate')+'.pdf',data:blob});
+    toast('PDF exported. Print on A4 landscape and cut along the dashed line.',true);
+  }catch(e){
+    console.error('Export failed',e);
+    if(e&&e.code==='declined')toast('Export cancelled.',false);
+    else if(blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='NRCP-Vehicle-Forms.pdf';document.body.appendChild(a);a.click();a.remove();toast('Direct export is restricted here. If no file saved, click Print and choose Save as PDF.',false)}
+    else toast('Could not create the PDF ('+((e&&(e.message||e.code))||'unknown error')+').',false);
+  }finally{ex.disabled=false;ex.classList.remove('loading');$('#ext').textContent='Export PDF'}
+};
+$('#pr').onclick=()=>{try{window.print()}catch(e){toast('Printing is blocked in this view. Open the page in a full browser tab to print.',false)}};
+
+/* return trip helpers */
+$('#fill').onclick=()=>{
+  ['rdate','tdate','by','p0','p1','p2','p3','p4','p5'].forEach(f=>{$('#b_'+f).value=$('#a_'+f).value});
+  $('#b_place').value='NRCP Office, Bicutan, Taguig';
+  $('#b_purpose').value=('Return to office from '+g('a_place')).trim().slice(0,120);
+  $$('#pn1 [aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));$$('#pn1 .err').forEach(e=>e.classList.remove('on'));
+  sync();$('#b_ttime').focus();toast('Copied from the request. Now enter the departure time.',true);
+};
+$('#rs').onclick=()=>{
+  $$('#f input,#f textarea').forEach(e=>e.value='');$('#a_rdate').value=iso(new Date());tab(0);
+  $$('.err').forEach(e=>e.classList.remove('on'));$$('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));
+  sync();toast('Form cleared.',true);
+};
+
+let z=1;const setZ=v=>{z=Math.min(2.4,Math.max(1,v));$('#sheet').style.width=Math.round(z*100)+'%';$('#zl').textContent=Math.round(z*100)+'%'};
+$('#zi').onclick=()=>setZ(z+.25);$('#zo').onclick=()=>setZ(z-.25);
+
+$('#a_rdate').value=iso(new Date());
+const min=iso(new Date(Date.now()+864e5));$('#a_tdate').min=min;$('#b_tdate').min=min;
+sync();
+</script>
+</body>
+</html>
